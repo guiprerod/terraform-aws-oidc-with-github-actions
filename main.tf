@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "eu-west-2" #TODO: change to your preferred region
+  region = "us-east-1" 
 }
 
 
