@@ -1,7 +1,6 @@
 github_org = "guiprerod-org"
 github_repositories = [
-    "tfc-ec2",
-    "tfc-aws-vpc",
+    "guiprerod-aws-actions"
   ] #TODO: change to your preferred repositories
 iam_role_name        = "GitHub_OIDC_Role"
 iam_role_description = "Enable GitHub OIDC access"
