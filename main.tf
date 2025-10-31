@@ -1,21 +1,26 @@
-provider "aws" {
-  region = "us-east-1" 
+resource "aws_iam_openid_connect_provider" "github" {
+  count = var.enabled ? 1 : 0
+
+  url             = var.oidc_url
+  client_id_list  = var.client_id_list
+  thumbprint_list = var.thumbprint_list
+
 }
 
+resource "aws_iam_role" "github" {
+  count = var.enabled ? 1 : 0
 
+  name                 = var.iam_role_name
+  description          = var.iam_role_description
+  assume_role_policy   = data.aws_iam_policy_document.assume_role[0].json
+  max_session_duration = var.max_session_duration
+  path                 = var.iam_role_path
 
-module "oidc-with-github-actions" {
-  source  = "thetestlabs/oidc-with-github-actions/aws"
-  version = "0.1.4"
+}
 
-  github_org = "thetestlabs"
-  github_repositories = [
-    "tfc-ec2",
-    "tfc-aws-vpc",
-  ] #TODO: change to your preferred repositories
-  iam_role_name        = "Example_OIDC_Role"
-  iam_role_description = "Enable GitHub OIDC access"
-  max_session_duration = 3600
-  iam_role_policy      = "AdministratorAccess"
-  iam_role_path        = "/security/"
+resource "aws_iam_role_policy_attachment" "policy" {
+  count = var.enabled ? 1 : 0
+
+  role       = aws_iam_role.github[count.index].id
+  policy_arn = "arn:aws:iam::aws:policy/${var.iam_role_policy}"
 }
